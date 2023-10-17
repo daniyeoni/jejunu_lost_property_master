@@ -50,37 +50,55 @@ class _FindListScreenState extends State<FindListScreen> {
     stream: FirebaseFirestore.instance.collection('findlist')
         .orderBy('title', descending:true)
         .snapshots(),
-    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (snapshot.hasError)
-        return new Text('Error: ${snapshot.error}');
-      switch (snapshot.connectionState) {
-        case ConnectionState.waiting:
-          return new Text('Loading...');
-        default:
-          return new ListView(
-            children:
-            snapshot.data!.docs.map((DocumentSnapshot e) {
-              return new Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 70,
-                    child: new ListTile(
-                      title: Text('1'),
-                      subtitle: Text('1'),
-                      onTap:() {},
-                    ),
-                  ),
-                  Divider(thickness: 1.0,
-                  )
-                ],
-              );
-            }).toList(),
+      builder: (context, snapshot) {
+        // 가져오는 동안 에러가 발생하면 보여줄 메세지 화면
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("목록을 가져오지 못했습니다."),
           );
-      }
-    },
-    );
+        }
 
-  }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          const CircularProgressIndicator();
+          //return Container(child: CircularProgressIndicator());
+        }
+        final findlists = snapshot.data!.docs
+            .map(
+              (QueryDocumentSnapshot e)=>
+              FindListModel.fromJson(
+                  json: (e.data() as Map<String, dynamic>)),
+        ).toList();
+        return Scaffold(
+        body:
+        ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data!.size,
+            itemBuilder: (context, index) {
+              final findlist = findlists[index];
+              return Padding(
+                padding: EdgeInsets.only(
+                    top: 10.0, bottom: 15.0, left: 8.0, right: 8.0),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 70,
+                      child: new ListTile(
+                        title: Text(findlist.title),
+                        subtitle: Text(findlist.content),
+                        onTap: () {},
+                      ),
+                    ),
+                    Divider(thickness: 1.0,
+                    ),
+                  ],
+                ),
+              );
+            }
+        )
+        );
+      }
+    );
+      }
 
   }
 
