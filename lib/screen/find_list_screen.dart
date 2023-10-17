@@ -68,6 +68,7 @@ class _FindListScreenState extends State<FindListScreen> {
               FindListModel.fromJson(
                   json: (e.data() as Map<String, dynamic>)),
         ).toList();
+
         return Scaffold(
         body:
         ListView.builder(
@@ -75,31 +76,32 @@ class _FindListScreenState extends State<FindListScreen> {
             itemCount: snapshot.data!.size,
             itemBuilder: (context, index) {
               final findlist = findlists[index];
-              return Padding(
-                padding: EdgeInsets.only(
-                    top: 10.0, bottom: 15.0, left: 8.0, right: 8.0),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 70,
-                      child: new ListTile(
-                        title: Text(findlist.title),
-                        subtitle: Text(findlist.content),
-                        onTap: () {},
-                      ),
+              return new Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 70,
+                    child: new ListTile(
+                      title: Text(findlist.title),
+                      subtitle: Text(findlist.content),
+                      onTap: () {},
                     ),
-                    Divider(thickness: 1.0,
-                    ),
-                  ],
-                ),
+                  ),
+                  Divider(thickness: 1.0,
+                  )
+
+                ],
               );
             }
-        )
+            )
+              );
+            }
+
         );
+
       }
-    );
+  
       }
 
-  }
+
 
 
