@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class FindListModel {
   final String id;
   final String? userEmail;
   final String title;
+
   //final DateTime createdTime;
   final String placeAddress;
   final double latitude;
   final double longitude;
   final String content;
+  //final String timestamp;
+   final String? picUrl;
 
   FindListModel({
     required this.id,
@@ -19,6 +23,8 @@ class FindListModel {
     required this.latitude,
     required this.longitude,
     required this.content,
+    //required this.timestamp,
+    required this.picUrl
   });
 
   // JSON으로부터 모델을 만드는 생성자
@@ -27,11 +33,13 @@ class FindListModel {
   })  : id = json['id'],
         userEmail = json['userEmail'],
         title = json['title'],
-        //createdTime = json['createdTime'],
+  //createdTime = json['createdTime'],
         placeAddress = json['placeAddress'],
         latitude = json['latitude'],
         longitude = json['longitude'],
-        content = json['content'];
+        content = json['content'],
+        //timestamp=json['timestamp'],
+        picUrl= json['picUrl'];
 
   // 모델을 JSON으로 변환
   Map<String, dynamic> toJson() {
@@ -43,36 +51,9 @@ class FindListModel {
       'placeAddress': placeAddress,
       'latitude': latitude,
       'longitude': longitude,
-      'content': content
+      'content': content,
+      //'timestamp':timestamp,
+      'picUrl':picUrl
     };
-  }
-
-  // 현재 모델을 특정 속성만 변환해서 새로 생성
-  FindListModel fromDocs(QueryDocumentSnapshot data) {
-    Map<String, dynamic> info = data.data() as Map<String, dynamic>;
-    return FindListModel(
-      id: info['id'],
-      userEmail: info['userEmail'],
-      title: info['title'],
-      //createdTime: info['createdTime'],
-      placeAddress: info['placeAddress'],
-      latitude: info['latitude'],
-      longitude: info['longitude'],
-      content: info['content'],
-    );
-  }
-
-  factory FindListModel.fromDoc(QueryDocumentSnapshot data) {
-    Map<String, dynamic> info = data.data() as Map<String, dynamic>;
-    return FindListModel(
-      id: info['id'],
-      userEmail: info['userEmail'],
-      title: info['title'],
-      //createdTime: info['createTime'],
-      placeAddress: info['placeAddress'],
-      latitude: info['latitude'],
-      longitude: info['longitude'],
-      content: info['content'],
-    );
   }
 }

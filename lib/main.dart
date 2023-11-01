@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 import 'component/auth_service.dart';
 import 'const/navigation_colors.dart';
 import 'firebase_options.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/date_symbol_data_file.dart';
+import 'package:intl/intl.dart';
 
 void main() async {
   //WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();

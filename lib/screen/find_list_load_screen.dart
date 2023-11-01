@@ -5,6 +5,7 @@ import 'package:jejunu_lost_property/component/appbar.dart';
 import 'package:jejunu_lost_property/component/text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:jejunu_lost_property/component/auth_service.dart';
 
 import '../component/auth_service.dart';
 import '../model/find_list_model.dart';
@@ -19,11 +20,11 @@ class FindListLoadScreen extends StatefulWidget {
 class _FindListLoadScreenState extends State<FindListLoadScreen> {
   final GlobalKey<FormState> formKey = GlobalKey();
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController controller = TextEditingController();
+  //final TextEditingController controller = TextEditingController();
   final TextEditingController contentController = TextEditingController();
   String? title;
-  DateTime? createdTime;
-  String? placeAddress;
+  //DateTime? createdTime;
+  //String? placeAddress;
   //LatLng? placeLatLng;
   String? content = '';
 
@@ -37,13 +38,13 @@ class _FindListLoadScreenState extends State<FindListLoadScreen> {
         child: Form(
           key: formKey,
           child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 9),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RenderTextField(
-                    label: '장소명',
+                    label: '제목',
                     textEditingController: nameController,
                     validator: textValidator,
                     textInputAction: TextInputAction.done,
@@ -73,7 +74,7 @@ class _FindListLoadScreenState extends State<FindListLoadScreen> {
                     onTap: () async {
                       var p = await PlacesAutocomplete.show(
                           context: context,
-                          apiKey: "AIzaSyCrZAL3EPNYEWfKT_IvPWCpnXex-OXADUA",
+                          apiKey: "",
                           mode: Mode.fullscreen,
                           language: 'kr',
                           types: [],
@@ -89,7 +90,7 @@ class _FindListLoadScreenState extends State<FindListLoadScreen> {
                           controller.text = p.description!;
                         });
                         GoogleMapsPlaces place = GoogleMapsPlaces(
-                          apiKey: "AIzaSyCrZAL3EPNYEWfKT_IvPWCpnXex-OXADUA",
+                          apiKey: "",
                           apiHeaders: await GoogleApiHeaders().getHeaders(),
                         );
                         PlacesDetailsResponse detail =
@@ -111,7 +112,7 @@ class _FindListLoadScreenState extends State<FindListLoadScreen> {
                       content = val;
                     },
                     decoration: InputDecoration(
-                      label: const Text('추가 정보를 입력하세요'),
+                      label: const Text('내용을 입력하세요.'),
                       labelStyle: TextStyle(
                         color: Colors.grey[800],
                         fontWeight: FontWeight.w500,
@@ -123,11 +124,9 @@ class _FindListLoadScreenState extends State<FindListLoadScreen> {
                     textInputAction: TextInputAction.done,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      submitInformation(context);
-                    },
+                    onPressed: submitInformation,
                     child: const Text(
-                      "로그아웃",
+                      "글 등록",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -144,41 +143,35 @@ class _FindListLoadScreenState extends State<FindListLoadScreen> {
 }
 
 // 등록버튼을 누르면 데이터가 저장되는 함수
-void submitInformation(BuildContext context) async {
+void submitInformation() async {
   // 폼 검증
   //if (formKey.currentState!.validate()) {
   //formKey.currentState!.save(); // 폼 저장
-  User? user = context.read<AuthService>().currentUser();
+  User? user = AuthService().currentUser();
   String? userEmail = user?.email;
+  //User? user = context.read<AuthService>().currentUser();
+  //String? userEmail = user?.email;
   DateTime now = DateTime.now();
   print("테스트");
   final findList = FindListModel(
       id: Uuid().v4(),
       userEmail: userEmail,
-      title: '2',
-      //createdTime: now,
+      title: '5',
+
       placeAddress: '장소',
       latitude: 30.0,
       longitude: 30.0,
-      content: '내용');
+      content: '테스트',
+      picUrl: '',
+      );
 
-  // place 모델 파이어스토어에 삽입
+  // findList 모델을 파이어스토어 findlist 컬렉션 문서에 추가
   await FirebaseFirestore.instance
       .collection(
-        'findlist',
-      )
+    'findlist1',
+  )
       .doc(findList.id)
       .set(findList.toJson());
-/*
-    nameController.clear();
-    controller.clear();
-    contentController.clear();
-    selectedEvent!.clear();
-    selectedDays!.clear();
-    event.clear();
-    days.clear();
-
- */
 }
 
 String? textValidator(String? val) {
